@@ -1,0 +1,21 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required: [apiKey]
+    properties:
+      apiKey:
+        type: string
+        description: EasyDocForms Partner API key (edfk_live_*)
+      baseUrl:
+        type: string
+        description: Optional API base URL override
+  commandFunction: |-
+    (config) => ({
+      command: "easydocforms-mcp",
+      args: [],
+      env: {
+        EASYDOCFORMS_API_KEY: config.apiKey,
+        ...(config.baseUrl ? { EASYDOCFORMS_BASE_URL: config.baseUrl } : {})
+      }
+    })
