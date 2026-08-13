@@ -34,6 +34,12 @@ go install github.com/easydocforms/easydocforms-mcp/cmd/easydocforms-mcp@latest
 
 You'll need an API key from the EasyDocForms app: **Settings → Integrations → Partner API** (shown exactly once).
 
+Or run the Docker image (no Go toolchain needed):
+
+```sh
+docker run -i --rm -e EASYDOCFORMS_API_KEY=edfk_live_... ghcr.io/easydocforms/easydocforms-mcp:latest
+```
+
 ### Claude Code
 
 ```sh

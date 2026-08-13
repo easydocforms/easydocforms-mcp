@@ -1,32 +1,34 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.easydocforms/easydocforms-mcp",
-  "description": "Healthcare intake forms as agent tools: import a blank PDF, get a hosted patient fill link, retrieve the completed pixel-exact PDF. PHI never enters agent context.",
-  "status": "active",
+  "title": "EasyDocForms",
+  "description": "Healthcare intake for agents: import blank PDFs, create patient fill links, fetch completed PDFs.",
+  "websiteUrl": "https://easydocforms.com",
   "repository": {
     "url": "https://github.com/easydocforms/easydocforms-mcp",
     "source": "github"
   },
-  "version_detail": {
-    "version": "0.1.1"
-  },
+  "version": "0.1.2",
   "packages": [
     {
-      "registry_name": "golang",
-      "name": "github.com/easydocforms/easydocforms-mcp/cmd/easydocforms-mcp",
-      "version": "0.1.1",
-      "environment_variables": [
+      "registryType": "oci",
+      "identifier": "ghcr.io/easydocforms/easydocforms-mcp:0.1.2",
+      "runtimeHint": "docker",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
         {
           "name": "EASYDOCFORMS_API_KEY",
-          "description": "EasyDocForms Partner API key (edfk_live_*), created in the app under Settings → Integrations → Partner API",
-          "is_required": true,
-          "is_secret": true
+          "description": "EasyDocForms Partner API key (edfk_live_*), created under Settings → Integrations → Partner API",
+          "isRequired": true,
+          "isSecret": true
         },
         {
           "name": "EASYDOCFORMS_BASE_URL",
           "description": "Optional API base URL override",
-          "is_required": false,
-          "is_secret": false
+          "isRequired": false,
+          "isSecret": false
         }
       ]
     }
