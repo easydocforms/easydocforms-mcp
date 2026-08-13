@@ -8,13 +8,13 @@
     "source": "github"
   },
   "version_detail": {
-    "version": "0.1.0"
+    "version": "0.1.1"
   },
   "packages": [
     {
       "registry_name": "golang",
       "name": "github.com/easydocforms/easydocforms-mcp/cmd/easydocforms-mcp",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "environment_variables": [
         {
           "name": "EASYDOCFORMS_API_KEY",
