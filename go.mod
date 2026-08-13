@@ -17,7 +17,3 @@ require (
 	golang.org/x/sys v0.41.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
 )
-
-// TODO(publish): drop this replace once easydocforms-go v0.1.0 is tagged and
-// on the module proxy — the launch checklist publishes the SDK first.
-replace github.com/easydocforms/easydocforms-go => ../easydocforms-go

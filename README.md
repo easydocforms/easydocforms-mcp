@@ -80,8 +80,6 @@ stdio only, credentials from the environment — per the MCP spec's guidance for
 go test ./... -race
 ```
 
-The module currently carries a `replace` for `easydocforms-go` pointing at a sibling checkout; it is dropped once the SDK is published.
-
 ## License
 
 MIT
