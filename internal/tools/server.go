@@ -13,6 +13,11 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
+// boolPtr feeds the *bool annotation hints. DestructiveHint and
+// OpenWorldHint default to TRUE in the MCP spec when omitted, so every tool
+// sets them explicitly.
+func boolPtr(b bool) *bool { return &b }
+
 // NewServer returns an MCP server with all six EasyDocForms tools registered.
 func NewServer(client *easydocforms.Client, version string) *mcp.Server {
 	server := mcp.NewServer(&mcp.Implementation{

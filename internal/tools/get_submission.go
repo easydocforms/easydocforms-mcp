@@ -27,11 +27,16 @@ type getSubmissionOutput struct {
 
 func addGetSubmission(server *mcp.Server, client *easydocforms.Client) {
 	mcp.AddTool(server, &mcp.Tool{
-		Name: "get_submission",
+		Name:  "get_submission",
+		Title: "Get submission metadata",
 		Description: "Look up a patient submission: when it arrived, which template and fill link " +
 			"produced it, your external_ref, and whether the completed PDF is ready. PHI boundary: " +
 			"returns metadata and an answer count only — never the patient's answers. Answers are " +
 			"retrieved server-side via GET /api/v1/submissions/{id} with the API key.",
+		Annotations: &mcp.ToolAnnotations{
+			ReadOnlyHint:  true,
+			OpenWorldHint: boolPtr(false),
+		},
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, input getSubmissionInput) (*mcp.CallToolResult, getSubmissionOutput, error) {
 		var zero getSubmissionOutput
 		sub, err := client.GetSubmission(ctx, input.SubmissionID)

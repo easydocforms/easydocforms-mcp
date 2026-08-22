@@ -14,13 +14,28 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime/debug"
+	"strings"
 
 	easydocforms "github.com/easydocforms/easydocforms-go"
 	"github.com/easydocforms/easydocforms-mcp/internal/tools"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-const version = "0.1.1"
+// version is stamped by release builds via -ldflags "-X main.version=…".
+// Unstamped builds (`go install …@vX.Y.Z`) resolve it from module build
+// info instead, so serverInfo can never drift from the tag again.
+var version = ""
+
+func resolveVersion() string {
+	if version != "" {
+		return version
+	}
+	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" && info.Main.Version != "(devel)" {
+		return strings.TrimPrefix(info.Main.Version, "v")
+	}
+	return "dev"
+}
 
 func main() {
 	apiKey := os.Getenv("EASYDOCFORMS_API_KEY")
@@ -32,14 +47,14 @@ func main() {
 	}
 
 	opts := []easydocforms.Option{
-		easydocforms.WithUserAgent("easydocforms-mcp/" + version),
+		easydocforms.WithUserAgent("easydocforms-mcp/" + resolveVersion()),
 	}
 	if baseURL := os.Getenv("EASYDOCFORMS_BASE_URL"); baseURL != "" {
 		opts = append(opts, easydocforms.WithBaseURL(baseURL))
 	}
 	client := easydocforms.NewClient(apiKey, opts...)
 
-	server := tools.NewServer(client, version)
+	server := tools.NewServer(client, resolveVersion())
 	if err := server.Run(context.Background(), &mcp.StdioTransport{}); err != nil {
 		log.Fatalf("easydocforms-mcp: %v", err)
 	}

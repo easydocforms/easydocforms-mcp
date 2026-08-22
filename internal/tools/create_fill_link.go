@@ -25,11 +25,18 @@ type createFillLinkOutput struct {
 
 func addCreateFillLink(server *mcp.Server, client *easydocforms.Client) {
 	mcp.AddTool(server, &mcp.Tool{
-		Name: "create_fill_link",
+		Name:  "create_fill_link",
+		Title: "Create patient fill link",
 		Description: "Mint a hosted URL where a patient fills the form — no EasyDocForms account " +
 			"needed on their side. Links always serve the template's latest version. Set " +
 			"external_ref to your own visit/order id to correlate the eventual submission; " +
 			"external_ref must never contain PHI.",
+		Annotations: &mcp.ToolAnnotations{
+			ReadOnlyHint:    false,
+			DestructiveHint: boolPtr(false), // additive: mints a link, deletes nothing
+			IdempotentHint:  false,
+			OpenWorldHint:   boolPtr(false),
+		},
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, input createFillLinkInput) (*mcp.CallToolResult, createFillLinkOutput, error) {
 		var zero createFillLinkOutput
 		link, err := client.CreateFillLink(ctx, easydocforms.CreateFillLinkParams{

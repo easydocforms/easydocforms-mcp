@@ -23,11 +23,18 @@ type importPDFFromURLOutput struct {
 
 func addImportPDFFromURL(server *mcp.Server, client *easydocforms.Client) {
 	mcp.AddTool(server, &mcp.Tool{
-		Name: "import_pdf_from_url",
+		Name:  "import_pdf_from_url",
+		Title: "Import blank PDF form",
 		Description: "Import a blank PDF intake form into EasyDocForms, turning it into a hosted, " +
 			"mobile-friendly fillable form. Async: returns an import_id immediately; processing " +
 			"typically takes 1–10 minutes — poll get_import_status. BLANK FORMS ONLY: the PDF must " +
 			"contain no patient information (PHI), and blank_form_attestation must be true.",
+		Annotations: &mcp.ToolAnnotations{
+			ReadOnlyHint:    false,
+			DestructiveHint: boolPtr(false), // additive: creates a template, deletes nothing
+			IdempotentHint:  false,
+			OpenWorldHint:   boolPtr(true), // fetches the caller-supplied external URL
+		},
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, input importPDFFromURLInput) (*mcp.CallToolResult, importPDFFromURLOutput, error) {
 		var zero importPDFFromURLOutput
 		if !input.BlankFormAttestation {

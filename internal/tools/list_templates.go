@@ -25,10 +25,15 @@ type listTemplatesOutput struct {
 
 func addListTemplates(server *mcp.Server, client *easydocforms.Client) {
 	mcp.AddTool(server, &mcp.Tool{
-		Name: "list_templates",
+		Name:  "list_templates",
+		Title: "List form templates",
 		Description: "List the organization's active PDF form templates, newest first — templates " +
 			"imported via this server and templates created in the EasyDocForms app alike. Use a " +
 			"template_id with create_fill_link.",
+		Annotations: &mcp.ToolAnnotations{
+			ReadOnlyHint:  true,
+			OpenWorldHint: boolPtr(false),
+		},
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, _ listTemplatesInput) (*mcp.CallToolResult, listTemplatesOutput, error) {
 		var zero listTemplatesOutput
 		templates, err := client.ListTemplates(ctx)

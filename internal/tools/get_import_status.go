@@ -28,10 +28,15 @@ type getImportStatusOutput struct {
 
 func addGetImportStatus(server *mcp.Server, client *easydocforms.Client) {
 	mcp.AddTool(server, &mcp.Tool{
-		Name: "get_import_status",
+		Name:  "get_import_status",
+		Title: "Check import status",
 		Description: "Check on a PDF import started by import_pdf_from_url. Imports never fail for " +
 			"quality reasons: the template is always created, and review_required tells staff what " +
 			"to double-check in the EasyDocForms editor.",
+		Annotations: &mcp.ToolAnnotations{
+			ReadOnlyHint:  true,
+			OpenWorldHint: boolPtr(false),
+		},
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, input getImportStatusInput) (*mcp.CallToolResult, getImportStatusOutput, error) {
 		var zero getImportStatusOutput
 		imp, err := client.GetImport(ctx, input.ImportID)

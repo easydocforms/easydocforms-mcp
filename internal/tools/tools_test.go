@@ -145,6 +145,51 @@ func TestToolRoster(t *testing.T) {
 	}
 }
 
+// TestToolTitlesAndAnnotations is the directory-submission tripwire: every
+// registered tool must carry a Title and explicit annotations (the Anthropic
+// connectors portal auto-flags tools without them), write tools must opt out
+// of the spec's destructive-by-default (*bool defaulting TRUE in go-sdk),
+// and OpenWorldHint (same default-TRUE trap) must always be explicit.
+func TestToolTitlesAndAnnotations(t *testing.T) {
+	var importPosts atomic.Int32
+	session := newSession(t, &importPosts)
+	listed, err := session.ListTools(context.Background(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	readOnly := map[string]bool{
+		"list_templates":         true,
+		"get_import_status":      true,
+		"get_submission":         true,
+		"get_completed_pdf_link": true,
+		"import_pdf_from_url":    false,
+		"create_fill_link":       false,
+	}
+	for _, tool := range listed.Tools {
+		if tool.Title == "" {
+			t.Errorf("%s: missing Title", tool.Name)
+		}
+		a := tool.Annotations
+		if a == nil {
+			t.Errorf("%s: missing Annotations", tool.Name)
+			continue
+		}
+		if a.OpenWorldHint == nil {
+			t.Errorf("%s: OpenWorldHint must be set explicitly (spec default is true)", tool.Name)
+		}
+		wantRO, known := readOnly[tool.Name]
+		if !known {
+			continue // TestToolRoster reports unexpected tools
+		}
+		if a.ReadOnlyHint != wantRO {
+			t.Errorf("%s: ReadOnlyHint = %v, want %v", tool.Name, a.ReadOnlyHint, wantRO)
+		}
+		if !wantRO && (a.DestructiveHint == nil || *a.DestructiveHint) {
+			t.Errorf("%s: write tool must set DestructiveHint explicitly false (spec default is true)", tool.Name)
+		}
+	}
+}
+
 // TestGetSubmissionNeverLeaksAnswers is the PHI boundary test: the fake API
 // returns a submission full of PHI-shaped answers, and NOTHING of it may
 // appear anywhere in the serialized MCP result.
